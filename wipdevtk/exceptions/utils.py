@@ -1,7 +1,7 @@
 import traceback
 from types import TracebackType
 
-from pydevtk.dev.mode import DEBUG, MODE
+from wipdevtk.dev.mode import DEBUG, MODE
 
 
 def handle_exception(

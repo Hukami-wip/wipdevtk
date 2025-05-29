@@ -7,4 +7,4 @@ RUN pip install -e .[dev]
 
 COPY . .
 
-CMD ["python", "-m", "pydevtk"] 
+CMD ["python", "-m", "wipdetk"] 

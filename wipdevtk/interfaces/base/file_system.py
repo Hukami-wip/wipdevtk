@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from pydevtk.dev import log
-from pydevtk.exceptions import handle_exception
-from pydevtk.meta import AbstractSingletonConnector
+from wipdevtk.dev import log
+from wipdevtk.exceptions import handle_exception
+from wipdevtk.meta import AbstractSingletonConnector
 
 
 class Connector(ABC, metaclass=AbstractSingletonConnector):
