@@ -1,12 +1,12 @@
 from typing import Optional
 
-from aoerror import handle_exception
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from sqlalchemy.exc import InterfaceError
 
 from wipdevtk.dev.log import log
 from wipdevtk.dev.mode import DEBUG, MODE
+from wipdevtk.exceptions import handle_exception
 from wipdevtk.meta import NamedSingleton
 
 
@@ -14,10 +14,11 @@ class SQLConnector(metaclass=NamedSingleton):
     def __init__(
         self,
         driver: Optional[str] = None,
-        server: Optional[str] = None,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
         database: Optional[str] = None,
-        uid: Optional[str] = None,
-        pwd: Optional[str] = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
         connection_url: str = None,
         *args,
         **kwargs,
@@ -28,9 +29,10 @@ class SQLConnector(metaclass=NamedSingleton):
             # Build a proper PostgreSQL connection URL for psycopg3
             connection_url = URL.create(
                 drivername="postgresql+psycopg",
-                username=uid,
-                password=pwd,
-                host=server,
+                username=username,
+                password=password,
+                host=host,
+                port=port,
                 database=database,
             )
             log(f"[INFO] sql connection URL: {connection_url}", "DEBUG")

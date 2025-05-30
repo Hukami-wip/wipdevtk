@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from aoerror import handle_exception
 from sqlalchemy import Boolean, Date, DateTime, Float, Integer, String
 from sqlalchemy.dialects.mssql import (
     BIGINT,
@@ -24,6 +23,7 @@ from sqlalchemy.dialects.mssql import (
 )
 from sqlalchemy.orm import Session
 
+from wipdevtk.exceptions import handle_exception
 from wipdevtk.interfaces.connectors.sql_connector import SQLConnector
 
 
@@ -114,3 +114,17 @@ def sqlalchemy_to_python_type(sqlalchemy_type):
         raise ValueError(
             f"The maping for the column type {sqlalchemy_type} is not implemented yet."
         )
+
+
+def none_as_value(type):
+    class NoneAsValueType(type):
+        __none_as_value__ = True
+
+    return NoneAsValueType
+
+
+def non_updatable(type):
+    class NonUpdatable(type):
+        __is_non_updatable__ = True
+
+    return NonUpdatable
