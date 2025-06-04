@@ -123,8 +123,55 @@ def none_as_value(type):
     return NoneAsValueType
 
 
-def non_updatable(type):
-    class NonUpdatable(type):
+def non_updatable(_type):
+    class NonUpdatable(_type):
         __is_non_updatable__ = True
 
     return NonUpdatable
+
+
+def alembic_render_non_updatable(type_, obj, autogen_context):
+    """
+    Alembic renderer utility for NonUpdatable types.
+
+    This function should be used as a render_item in Alembic's env.py
+    to properly render NonUpdatable wrapped types as their underlying types.
+
+    Args:
+        type_: The SQLAlchemy type being rendered
+        obj: The column object
+        autogen_context: Alembic's autogeneration context
+
+    Returns:
+        str: The rendered type string, or False to use default rendering
+    """
+    # Check if this is a NonUpdatable type by looking for the marker attribute
+    if hasattr(type_, "__is_non_updatable__") and type_.__is_non_updatable__:
+        # Get the underlying type from the MRO (Method Resolution Order)
+        for base in type_.__mro__[1:]:
+            if base.__name__ != "NonUpdatable" and hasattr(base, "__module__"):
+                module = base.__module__
+
+                # Handle SQLAlchemy core types
+                if module == "sqlalchemy" or module.startswith("sqlalchemy.sql"):
+                    type_name = base.__name__
+
+                    # Check if this has timezone parameter (for DateTime types)
+                    if (
+                        hasattr(obj, "type")
+                        and hasattr(obj.type, "timezone")
+                        and obj.type.timezone
+                    ):
+                        return f"sa.{type_name}(timezone=True)"
+                    else:
+                        return f"sa.{type_name}()"
+
+                # Handle other SQLAlchemy types
+                elif module.startswith("sqlalchemy"):
+                    return f"sa.{base.__name__}()"
+
+        # Fallback: if we can't determine the base type, use DateTime
+        return "sa.DateTime(timezone=True)"
+
+    # Return False to use default rendering for other types
+    return False
