@@ -60,16 +60,12 @@ def handle_exception(
     exception_message_list = [msg for msg in exception_message_list if msg != ""]
     exception_message = "\n".join(exception_message_list)
 
-    has_new_message = exception_message != original_message
+    # reinitialize = has_kwargs or has_new_message
 
-    has_kwargs = len(kwargs) > 0
-
-    reinitialize = has_kwargs or has_new_message
-
-    if reinitialize:
-        if "traceback_to_use" not in kwargs.keys():
-            kwargs["traceback_to_use"] = exception.__traceback__
-        exception = type(exception)(exception_message, **kwargs)
+    # if reinitialize:
+    #     if "traceback_to_use" not in kwargs.keys():
+    #         kwargs["traceback_to_use"] = exception.__traceback__
+    #     exception = type(exception)(exception_message, **kwargs)
 
     if no_raise:
         pass

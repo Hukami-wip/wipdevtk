@@ -19,16 +19,15 @@ class SQLConnector(metaclass=NamedSingleton):
         database: Optional[str] = None,
         username: Optional[str] = None,
         password: Optional[str] = None,
-        connection_url: str = None,
-        *args,
+        connection_url: Optional[str] = None,
+        drivername: Optional[str] = None,
         **kwargs,
     ):
         """ """
 
         if not connection_url:
-            # Build a proper PostgreSQL connection URL for psycopg3
             connection_url = URL.create(
-                drivername="postgresql+psycopg",
+                drivername=drivername,
                 username=username,
                 password=password,
                 host=host,
